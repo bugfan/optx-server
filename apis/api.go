@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"optx-server/apis/option"
 	"optx-server/apis/user"
 
 	"github.com/gin-gonic/gin"
@@ -27,6 +28,7 @@ func NewAPIServer() *APIServer {
 		api.POST("/login", user.Login)
 		api.POST("/logout", user.Logout)
 		api.POST("/logon", user.Logon)
+		api.POST("/option", option.Create)
 	}
 	admin := api.Group("/admin")
 	{

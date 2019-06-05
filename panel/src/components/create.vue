@@ -12,6 +12,9 @@
             <el-button v-if="k!=0" slot="append" type="primary" @click="form.options.splice(k, 1);"><i class="el-icon-delete"></i></el-button>
           </el-input>
         </el-form-item>
+      <el-form-item label="答案选项">
+        <el-input v-model="form.answer"></el-input>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="onSubmit">立即创建</el-button>
         <el-button>取消</el-button>
@@ -29,7 +32,7 @@ export default {
       form: {
           question: '',
           desc: '',  
-          answer: null,
+          answer: '',
           options:[''],
         },
     };
@@ -42,7 +45,7 @@ export default {
       api.create({
         question:this.form.question,
         desc:this.form.desc,
-        answer:this.form.answer,
+        answer:parseInt(this.form.answer),
         options:this.form.options,
         }).then(res =>{
           console.log(res.data)
