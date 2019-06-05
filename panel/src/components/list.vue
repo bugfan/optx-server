@@ -1,19 +1,83 @@
 <template>
-    <h4 class='header'>学生信息录入</h4>
+  <div>
+  <el-table :data="list" >
+      <el-table-column align="center" label='ID' width="95">
+        <template slot-scope="scope">
+          {{scope.row.ID}}
+        </template>
+      </el-table-column>
+      <el-table-column label="问题">
+        <template slot-scope="scope">
+          {{scope.row.Question}}
+        </template>
+      </el-table-column>
+      <el-table-column label="选项">
+        <template slot-scope="scope">
+          {{scope.row.Options}}
+        </template>
+      </el-table-column>
+      <el-table-column label="描述">
+        <template slot-scope="scope">
+          {{scope.row.Desc}}
+        </template>
+      </el-table-column>
+      <el-table-column label="答案">
+        <template slot-scope="scope">
+          {{scope.row.Answer}}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="动作" width="270" class-name="small-padding fixed-width">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" icon="el-icon-edit" @click="editDialog(scope.$index, scope.row)">编辑</el-button>
+          <el-button type="danger" size="mini" icon="el-icon-delete" circle @click="deleteDialog(scope.$index,scope.row)"></el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script>
-//import VChooser from "../../components/base/chooser";
+import api from '@/apis/option'
+
 export default {
   data() {
     return {
-      
+      list:[],
     };
   },
   created: function() {
+    this.fetch()
   },
   methods: {
-   
+    fetch(){
+      api.all().then(res => {
+        this.list=res.data
+        console.log(this.list)
+      })
+    },
+    editDialog(idx, data) {
+
+    },
+     deleteDialog(index,data) {
+      this.$confirm('此操作将删除该条目, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(()=>{
+        return api.del(data.ID)
+      }).then(() => {
+        this.fetch()
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+    },
   }
 };
 </script>
