@@ -31,6 +31,7 @@ func NewAPIServer() *APIServer {
 		api.POST("/option", option.Create)
 		api.GET("/option", option.All)
 		api.DELETE("/option/:id", option.Delete)
+		api.PUT("/option/:id", option.Update)
 
 	}
 	admin := api.Group("/admin")
