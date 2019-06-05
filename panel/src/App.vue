@@ -8,11 +8,8 @@
           <!--<img src="@/assets/img/1.png"/>-->
           <h2>功能</h2>
           <ul>
-            <router-link :to="{ name: 'create' }" tag="li" active-class="active">
-              增加题目
-            </router-link>
-            <router-link :to="{ name: 'list' }" tag="li" active-class="active">
-              列表
+            <router-link :to="{ name: 'options' }" tag="li" active-class="active">
+              题 库
             </router-link>
           </ul>
           <div class="hr"></div>

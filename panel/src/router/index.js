@@ -1,16 +1,13 @@
 import Vue from "vue";
 import Router from "vue-router";
-import Create from "@/components/create";
-import List from "@/components/list";
-// import Charts from "@/components/charts";
+import Options from "@/components/options";
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
-    { name: "default", path: "", redirect: { name: "create" } }, // 默认
-    { name: "create", path: "/create", component: Create }, //
-    { name: "list", path: "/list", component: List }
+    { name: "default", path: "", redirect: { name: "options" } }, // 默认
+    { name: "options", path: "/options", component: Options }
 
   ]
 });
