@@ -1,8 +1,11 @@
 package apis
 
 import (
+	"errors"
+	"net/http"
 	"optx-server/apis/option"
 	"optx-server/apis/user"
+	"optx-server/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,23 +19,30 @@ var controllers = make([]Controller, 0)
 func RegisterController(c Controller) {
 	controllers = append(controllers, c)
 }
+func Validate() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		attr, err := utils.GetJWTDataFromCookie(c.Request)
+		if err != nil || attr["Username"] == "" {
+			// 过期或错cookie
+			c.JSON(http.StatusUnauthorized, errors.New("身份验证失败"))
+			c.Abort()
+		}
+	}
+}
 
 func NewAPIServer() *APIServer {
 	s := &APIServer{
 		G: gin.Default(),
 	}
+
 	s.G.Use(gin.Recovery())
 	s.G.Use(gin.ErrorLogger())
 	api := s.G.Group("/api")
 	{
+		// 登录
 		api.POST("/login", user.Login)
 		api.POST("/logout", user.Logout)
 		api.POST("/logon", user.Logon)
-		api.POST("/option", option.Create)
-		api.GET("/option", option.All)
-		api.DELETE("/option/:id", option.Delete)
-		api.PUT("/option/:id", option.Update)
-
 	}
 	admin := api.Group("/admin")
 	{
@@ -40,6 +50,20 @@ func NewAPIServer() *APIServer {
 		admin.POST("/logout", user.AdminLogout)
 		admin.POST("/logon", user.AdminLogon)
 	}
+	fun := s.G.Group("/api")
+	fun.Use(Validate())
+	{
+		// 首页
+		fun.GET("/index", user.Login)
+
+		// 后台题接口
+		fun.POST("/option", option.Create)
+		fun.GET("/option", option.All)
+		fun.DELETE("/option/:id", option.Delete)
+		fun.PUT("/option/:id", option.Update)
+
+	}
+
 	return s
 }
 
