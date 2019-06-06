@@ -1,12 +1,14 @@
 package models
 
 import (
+	"log"
 	"optx-server/utils"
 	"time"
 )
 
 func init() {
 	Register(new(User))
+	Register(new(Admin))
 }
 
 func initDefaultUser() {
@@ -31,7 +33,7 @@ type User struct {
 
 func (s *User) Exist() bool {
 	s.Password = utils.EncryptedPassword(s.Password)
-	has, _ := x.Exist(s)
+	has, _ := x.Where("name = ? and password = ?", s.Name, s.Password).Exist(s)
 	return has
 }
 
@@ -57,6 +59,7 @@ type Admin struct {
 
 func (s *Admin) Exist() bool {
 	s.Password = utils.EncryptedPassword(s.Password)
-	has, _ := x.Exist(s)
+	has, _ := x.Where("name = ? and password = ?", s.Name, s.Password).Exist(s)
+	log.Println()
 	return has
 }

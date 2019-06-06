@@ -71,6 +71,7 @@ func SetEngine(config *Config) (*xorm.Engine, error) {
 
 func initDefalutData() {
 	initDefaultUser()
+	initDefaultAdminUser()
 }
 
 func All(obj interface{}) error {

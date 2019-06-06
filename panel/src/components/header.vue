@@ -2,8 +2,7 @@
     <div class="app-head">
       <div class="app-head-inner">
         <!--<router-link :to="{name: 'index'}" class="head-logo">-->
-          <img class="head-logo" src="@/assets/img/logo.png">
-
+          <img class="head-logo" src="@/assets/img/4.png">
         <!--</router-link>-->
         <div class="head-nav">
           <ul class="nav-list">
@@ -11,7 +10,10 @@
             <li class="nav-pile">|</li>
             <li @click="showDialog('isShowReg')">注册</li>
             <li class="nav-pile">|</li>
-            <li @click="showDialog('isShowAbout')">关于</li>-->
+            <li @click="showDialog('isShowAbout')">关于</li> -->
+            <li>
+            <el-button @click="logout()">退出</el-button>
+            </li>
           </ul>
         </div>  
       </div>
@@ -19,34 +21,25 @@
 </template>
 
 <script type="text/javascript">
-/*import star from 'components/star/star';
+import api from '@/apis/login'
 
   export default {
-    props: {
-      seller: {
-        type: Object
-      }
-    },
     data() {
       return {
-        detailShow: false
+        
       };
     },
     methods: {
-      showDetail() {
-        this.detailShow = true;
+      logout() {
+        api.logout().then(res => {
+          this.$router.push(0)
+          this.$router.push({path: '/login'});  
+        })
       },
-      hideDetail() {
-        this.detailShow = false;
-      }
     },
     created() {
-      this.classMap = ['decrease', 'discount', 'special', 'invoice', 'guarantee'];
-    },
-    components: {
-      star
     }
-  };*/
+  };
 </script>
 
 <style>
