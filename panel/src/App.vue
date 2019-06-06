@@ -11,6 +11,9 @@
             <router-link :to="{ name: 'options' }" tag="li" active-class="active">
               题 库
             </router-link>
+            <router-link :to="{ name: 'insert' }" tag="li" active-class="active">
+              批量插入
+            </router-link>
           </ul>
           <div class="hr"></div>
         </div>
