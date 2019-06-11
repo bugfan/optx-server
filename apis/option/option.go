@@ -14,20 +14,20 @@ func Create(ctx *gin.Context) {
 	opt := models.Options{}
 	err := ctx.Bind(&opt)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, err)
+		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 	if opt.Question == "" {
-		ctx.JSON(http.StatusBadRequest, errors.New("问题为空"))
+		ctx.AbortWithError(http.StatusBadRequest, errors.New("问题为空"))
 		return
 	}
 	if opt.Answer < 1 {
-		ctx.JSON(http.StatusBadRequest, errors.New("答案格式不正确"))
+		ctx.AbortWithError(http.StatusBadRequest, errors.New("答案格式不正确"))
 		return
 	}
 	opt.Created = time.Now()
 	if _, err := models.GetEngine().Insert(&opt); err != nil {
-		ctx.JSON(http.StatusBadRequest, opt)
+		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 	ctx.JSON(http.StatusCreated, opt.ID)
@@ -42,7 +42,7 @@ func All(ctx *gin.Context) {
 func Delete(ctx *gin.Context) {
 	id := to.Int64(ctx.Param("id"))
 	if id < 1 {
-		ctx.JSON(http.StatusBadRequest, errors.New("ID不正确"))
+		ctx.AbortWithError(http.StatusBadRequest, errors.New("ID不正确"))
 		return
 	}
 	var o models.Options
@@ -53,23 +53,39 @@ func Delete(ctx *gin.Context) {
 func Update(ctx *gin.Context) {
 	id := to.Int64(ctx.Param("id"))
 	if id < 1 {
-		ctx.JSON(http.StatusBadRequest, errors.New("ID不正确"))
+		ctx.AbortWithError(http.StatusBadRequest, errors.New("ID不正确"))
 		return
 	}
 	opt := models.Options{}
 	err := ctx.Bind(&opt)
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, err)
+		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
 	if opt.Question == "" {
-		ctx.JSON(http.StatusBadRequest, errors.New("问题为空"))
+		ctx.AbortWithError(http.StatusBadRequest, errors.New("问题为空"))
 		return
 	}
 	if opt.Answer < 1 {
-		ctx.JSON(http.StatusBadRequest, errors.New("答案格式不正确"))
+		ctx.AbortWithError(http.StatusBadRequest, errors.New("答案格式不正确"))
 		return
 	}
 	_, err = models.GetEngine().Id(id).AllCols().Update(&opt)
 	ctx.JSON(http.StatusOK, id)
+}
+
+// 批量导入
+func CreateLot(ctx *gin.Context) {
+	opts := make([]*models.Options, 0, 0)
+	err := ctx.Bind(&opts)
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	_, err = models.GetEngine().Insert(&opts)
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	ctx.JSON(http.StatusBadRequest, err)
 }

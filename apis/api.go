@@ -58,6 +58,7 @@ func NewAPIServer() *APIServer {
 
 		// 后台题接口
 		fun.POST("/option", option.Create)
+		fun.POST("/option/all", option.CreateLot) //批量
 		fun.GET("/option", option.All)
 		fun.DELETE("/option/:id", option.Delete)
 		fun.PUT("/option/:id", option.Update)

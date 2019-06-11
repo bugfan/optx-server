@@ -1,7 +1,6 @@
 export var ws = {}
 
 export default {
-    ws: {},
     initWebSocket: function (){ //初始化weosocket
         var login = this.login
         this.socket = new WebSocket('ws://192.168.31.44/reunion/websocket')
