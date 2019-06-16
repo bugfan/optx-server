@@ -16,3 +16,10 @@ type Options struct {
 	Updated   time.Time
 	DeletedAt time.Time `xorm:"deleted"`
 }
+
+type Temp struct {
+	Question string
+	Options  []string
+	Desc     string
+	Answer   int64
+}

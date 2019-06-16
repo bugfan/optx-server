@@ -8,6 +8,7 @@
       </el-input>
       <el-button type="primary" @click="deal()" round>处理</el-button>
       <!-- 展示题目 -->
+      <div v-show="show=='list'">
       <el-table :data="list" >
             <el-table-column align="center" label='ID' width="95">
               <template slot-scope="scope">
@@ -41,17 +42,46 @@
               </template>
             </el-table-column>
         </el-table>
+                <el-button type="primary" size="mini" icon="el-icon-edit" @click="piInsert()">批量插入题目</el-button>        
+                <el-button type="primary" size="mini"  @click="resetInsert()">清空</el-button>        
+        </div>
+<!-- 修改狂 -->
+        <div v-if="show=='dialog'">
+         <el-form ref="form" :model="form" label-width="80px">
+          <el-form-item label="问题" required>
+            <el-input v-model="form.question" placeholder="输入问题"></el-input>
+          </el-form-item>
+          <el-form-item label="答案描述" >
+            <el-input type="textarea" placeholder="输入问题答案的描述或者解答" v-model="form.desc"></el-input>
+          </el-form-item>
+          <el-form-item  label="选项" required>
+              <el-input v-for="(v, k) in form.options" v-model="form.options[k]" placeholder="添加问题，可以添加多个" :key="k">
+                <el-button v-if="k===0" slot="append" type="primary" @click="form.options.push('')"><i class="el-icon-plus"></i></el-button>
+                <el-button v-if="k!=0" slot="append" type="primary" @click="form.options.splice(k, 1);"><i class="el-icon-delete"></i></el-button>
+              </el-input>
+            </el-form-item>
+          <el-form-item label="答案选项" required>
+            <el-input v-model="form.answer" placeholder="答案输入数字,按照选择顺序从0开始" ></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="saveToList">保存</el-button>
+            <el-button  @click="cancel">取消</el-button>
+          </el-form-item>
+        </el-form>
+      </div>
   </div>
 </template>
 
 <script>
-import api from '@/apis/option'
+import api from '@/apis/insert'
 
 export default {
   data() {
     return {
       list:[],
       textarea:'',
+        show:'list',
+      action:'add',
       form: {
           question: '',
           desc: '',  
@@ -63,11 +93,41 @@ export default {
     };
   },
   mounted: function() {
-    this.fetch()
+    // this.fetch()
   },
   methods: {
-    fetch(){
-      
+    saveToList () {
+       this.list[this.form.id]={
+         Answer:this.form.answer,
+         Desc:this.form.desc,
+         Options:this.form.options,
+         Question:this.form.question
+       }
+       this.reset()
+    },
+    resetInsert() {
+      this.list = []
+    },
+    piInsert () {
+      if (this.list.length < 1){
+        this.$message({
+          type:"error",
+          msg:"还没有题目填入"
+        })
+      }else{
+        var newList = []
+        for (let i = 0;i<this.list.length;i++){
+          if (this.list[i]){
+            newList.push(this.list[i])
+          }
+        }
+        
+        api.create(newList).then(res => {
+          console.log("res:",res.data)
+        }).error(res => {
+          console.log("err:",res.data)
+        })
+      }
     },
     getAnswerIndex (t) {
      if (t== 'A'){
@@ -89,6 +149,44 @@ export default {
        return 6
      }
      return -1
+    },
+    editDialog(idx, data) {
+      console.log("data:",idx,data)
+      this.show='dialog'
+      this.action='edit'
+      this.form.answer=data.Answer
+      this.form.question=data.Question
+      this.form.desc=data.Desc
+      this.form.id=idx
+      this.form.options=data.Options
+    },
+    deleteDialog (idx, data){
+       this.list[idx]=null
+        let oldList = this.list
+        this.list = []
+        for (let i = 0;i<oldList.length;i++){
+          if (oldList[i]){
+            this.list.push(oldList[i])
+          }
+        }
+    },
+     newDialog(){
+      this.reset()
+      this.show='dialog'
+    },
+    cancel() {
+      this.show='list'
+      // this.fetch()
+      this.reset()
+    },
+    reset() {
+      this.action='add'
+      this.show='list'
+      this.form.question=''
+      this.form.id=0
+      this.form.desc=''
+      this.form.answer=''
+      this.form.options=['']
     },
     deal() {
       this.list=[]

@@ -82,10 +82,10 @@ func CreateLot(ctx *gin.Context) {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-	_, err = models.GetEngine().Insert(&opts)
+	_, err = models.GetEngine().Insert(opts)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
 	}
-	ctx.JSON(http.StatusBadRequest, err)
+	ctx.JSON(http.StatusOK, err)
 }
