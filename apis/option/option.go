@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"optx-server/models"
+	"strconv"
 	"time"
 
 	"github.com/bugfan/to"
@@ -88,4 +89,25 @@ func CreateLot(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, err)
+}
+
+/// 获取一些题目
+
+func GetSMS(ctx *gin.Context) {
+	if ctx.Query("au") != "XNlcm5hbW" {
+		ctx.AbortWithError(403, errors.New(""))
+		return
+	}
+
+	c, _ := strconv.Atoi(ctx.Query("count"))
+	if c < 1 {
+		ctx.AbortWithError(http.StatusBadRequest, errors.New("数据太少"))
+		return
+	}
+	list, err := models.GetCountOptions(c)
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	ctx.JSON(http.StatusOK, list)
 }

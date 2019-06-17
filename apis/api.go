@@ -44,6 +44,11 @@ func NewAPIServer() *APIServer {
 		api.POST("/logout", user.Logout)
 		api.POST("/logon", user.Logon)
 	}
+	sms := api.Group("/sms")
+	{
+		// 小程序接口
+		sms.GET("", option.GetSMS)
+	}
 	admin := api.Group("/admin")
 	{
 		admin.POST("/login", user.AdminLogin)
