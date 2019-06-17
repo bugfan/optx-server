@@ -37,6 +37,7 @@ func NewAPIServer() *APIServer {
 
 	s.G.Use(gin.Recovery())
 	s.G.Use(gin.ErrorLogger())
+	s.G.Static("/admin", "./panel/dist")
 	api := s.G.Group("/api")
 	{
 		// 登录
