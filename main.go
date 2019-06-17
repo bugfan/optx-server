@@ -22,5 +22,5 @@ func main() {
 		os.Exit(-1)
 	}
 	// run api server
-	apis.NewAPIServer().G.Run(":9997")
+	apis.NewAPIServer().G.Run(settings.Get("server_addr") + ":" + settings.Get("server_port"))
 }

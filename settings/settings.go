@@ -14,6 +14,8 @@ func init() {
 		"db_host":     "127.0.0.1:3306",
 		"db_name":     "opt",
 		"db_log":      "xorm.log",
+		"server_port": "9997",
+		"server_addr": "0.0.0.0",
 		"jwt_secret":  "", // "" is use random string
 	}
 }
