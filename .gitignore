@@ -13,3 +13,4 @@
 xorm.log
 optx-server
 ssl.*
+*.pem
