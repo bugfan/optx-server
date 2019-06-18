@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
 	"optx-server/apis"
 	"optx-server/models"
@@ -22,5 +23,11 @@ func main() {
 		os.Exit(-1)
 	}
 	// run api server
-	apis.NewAPIServer().G.Run(settings.Get("server_addr") + ":" + settings.Get("server_port"))
+	if settings.Get("ishttps") == "true" {
+		pem, _ := ioutil.ReadFile("./ssl.pem")
+		key, _ := ioutil.ReadFile("./ssl.key")
+		apis.NewAPIServer().G.RunTLS(("server_addr")+":"+settings.Get("server_port"), string(pem), string(key))
+	} else {
+		apis.NewAPIServer().G.Run(settings.Get("server_addr") + ":" + settings.Get("server_port"))
+	}
 }
