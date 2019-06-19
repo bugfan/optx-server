@@ -10,7 +10,7 @@ var defaults map[string]string
 func init() {
 	defaults = map[string]string{
 		"db_user":     "root",
-		"db_password": "123456",
+		"db_password": "",
 		"db_host":     "127.0.0.1:3306",
 		"db_name":     "opt",
 		"db_log":      "xorm.log",
