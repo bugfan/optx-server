@@ -8,10 +8,10 @@
           <!--<img src="@/assets/img/1.png"/>-->
           <h2>功能</h2>
           <ul>
-            <router-link :to="{ name: 'options' }" tag="li" active-class="active">
+            <router-link :to="{ name: 'options' }" @click.native="add(1)" tag="li" active-class="active">
               题 库
             </router-link>
-            <router-link :to="{ name: 'insert' }" tag="li" active-class="active">
+            <router-link :to="{ name: 'insert' }" tag="li" @click.native="add(2)" active-class="active">
               批量插入
             </router-link>
           </ul>
@@ -42,6 +42,11 @@ export default {
   name: "App",
   components: {
     "v-header": header
+  },
+  methods: {
+    add (v) {
+      // alert(v)
+    }
   }
 };
 </script>
