@@ -74,3 +74,22 @@ func GetCountOptions(count int) (wl []*WordList, err error) {
 	}
 	return
 }
+
+func GetOptionsPages(offset, limit int) (wl []*WordList, err error) {
+	options := make([]*Options, 0, 0)
+	err = GetEngine().Limit(limit, offset).Find(&options)
+	if err == nil {
+		wl = make([]*WordList, 0, 0)
+		for _, v := range options {
+			items := getItems(v.Options, v.Answer)
+			obj := &WordList{
+				Question: v.Question,
+				Detail:   v.Desc,
+				Items:    items,
+				Pic:      "",
+			}
+			wl = append(wl, obj)
+		}
+	}
+	return
+}

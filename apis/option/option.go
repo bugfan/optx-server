@@ -111,3 +111,23 @@ func GetSMS(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, list)
 }
+
+func GetSMSTemp(ctx *gin.Context) {
+	if ctx.Query("au") != "XNlcm5hbW" {
+		ctx.AbortWithError(403, errors.New(""))
+		return
+	}
+
+	limit, _ := strconv.Atoi(ctx.Query("limit"))
+	if limit < 1 {
+		ctx.AbortWithError(http.StatusBadRequest, errors.New("数据太少"))
+		return
+	}
+	offset, _ := strconv.Atoi(ctx.Query("offset"))
+	list, err := models.GetOptionsPages(offset, limit)
+	if err != nil {
+		ctx.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	ctx.JSON(http.StatusOK, list)
+}

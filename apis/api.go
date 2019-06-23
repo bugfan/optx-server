@@ -49,6 +49,7 @@ func NewAPIServer() *APIServer {
 	{
 		// 小程序接口
 		sms.GET("", option.GetSMS)
+		sms.GET("/temp", option.GetSMSTemp)
 	}
 	admin := api.Group("/admin")
 	{
