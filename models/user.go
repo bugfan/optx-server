@@ -13,11 +13,11 @@ func init() {
 
 func initDefaultUser() {
 	user := User{
-		Name:     "admin",
-		Password: "123456",
+		Name: "admin",
 	}
 	has, _ := x.Where("name=?", user.Name).Exist(&user)
 	if !has {
+		user.Password = utils.EncryptedPassword("123456")
 		x.Insert(&user)
 	}
 }
@@ -39,11 +39,11 @@ func (s *User) Exist() bool {
 
 func initDefaultAdminUser() {
 	admin := Admin{
-		Name:     "admin",
-		Password: "123456",
+		Name: "admin",
 	}
 	has, _ := x.Where("name=?", admin.Name).Exist(&admin)
 	if !has {
+		admin.Password = utils.EncryptedPassword("123456")
 		x.Insert(&admin)
 	}
 }
@@ -62,4 +62,22 @@ func (s *Admin) Exist() bool {
 	has, _ := x.Where("name = ? and password = ?", s.Name, s.Password).Exist(s)
 	log.Println()
 	return has
+}
+
+func ResetAdmin(user, pwd string) error {
+	u := &Admin{
+		Name: user,
+	}
+	has, _ := x.Where("name=?", u.Name).Exist(u)
+	if has {
+		u.JWT = ""
+		u.Password = utils.EncryptedPassword(pwd)
+		_, err := x.Where("name =?", u.Name).AllCols().Update(u)
+		return err
+	} else {
+		u.Password = utils.EncryptedPassword(pwd)
+		u.JWT = ""
+		_, err := x.Insert(u)
+		return err
+	}
 }
