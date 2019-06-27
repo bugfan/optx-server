@@ -12,7 +12,7 @@
       <el-table :data="list" >
             <el-table-column align="center" label='ID' width="95">
               <template slot-scope="scope">
-                {{scope.row.ID}}
+                {{scope.row.Qid}}
               </template>
             </el-table-column>
             <el-table-column label="问题">
@@ -112,7 +112,7 @@ export default {
       if (this.list.length < 1){
         this.$message({
           type:"error",
-          msg:"还没有题目填入"
+          message:"还没有题目填入"
         })
       }else{
         var newList = []
@@ -124,12 +124,24 @@ export default {
         
         api.create(newList).then(res => {
           console.log("res:",res.data)
+          if (res.status==200){
+            this.$message({
+              type:"success",
+              message:"题录入成功"
+            })
+            this.list=[]
+          }
         }).error(res => {
           console.log("err:",res.data)
+          this.$message({
+            type:"error",
+            message:res.data
+          })
         })
       }
     },
     getAnswerIndex (t) {
+     t=t.toUpperCase()
      if (t== 'A'){
        return 1
      }
@@ -190,30 +202,59 @@ export default {
     },
     deal() {
       this.list=[]
-    var segs = this.textarea.split('.')
+    var segs = this.textarea.split(/[\d]+.[\s]+/)
     for (let i =1 ;i<segs.length;i++){
+      if (segs[i].length<2){
+        continue
+      }
       // console.log("ti:",segs[i])
       let ti = segs[i].split('。')
       if (ti.length > 0){
+        // 计算问题
         let ques = ti[0]
-        
-        let answs = ti[1].split('\r')
-        let answsItem = answs[0].split('）')
-        let answers = []
-        for (let j = 1;j<answsItem.length;j++){
-            let startInd = answsItem[j].indexOf(' ')
-            let item = answsItem[j].slice(0,startInd).replace(/^\s+|\s+$/g,"")  //replace(/ /g,'')
-            answers.push(item)
-        }
         let answer = ques.slice(ques.indexOf('（')+1,ques.indexOf('）')).replace(/\s+/g,"") //replace(/ /g,'')
         ques=ques.replace(new RegExp(answer,'g'),'')
+        //计算答案选项
+        let answs = ti[1].split('\r')
+        let answers = []
+        let answsItem = answs[0].split('）')
+        if (answsItem.length==1){
+          // 中文点
+          let cans = answsItem[0].split(/[a-z]{1}|[A-Z]{1}、/)
+          for (let k in cans){
+            if (cans[k]=='↵'){
+              continue
+            }
+            let cval = cans[k]
+            let cval2=cval.replace(/^\s+|\s+$/g,"")
+            if (cval2==''){
+              continue
+            }
+            answers.push(cval2)
+          }
+        }else{
+          // 括号包起来的
+          for (let j = 1;j<answsItem.length;j++){
+              let startInd = answsItem[j].indexOf(' ')
+              let item = answsItem[j].slice(0,startInd).replace(/^\s+|\s+$/g,"")  //replace(/ /g,'')
+              if (item.slice(item.length-1,item.length)=='（'){
+                item=item.slice(0,item.length-1)
+              }
+              answers.push(item)
+          }
+        }
+        
         let obj = {
+          Qid:i,
           Question:ques,
           Options:answers,
           Desc:'',
           Answer:this.getAnswerIndex(answer),
         }
         // console.log("ti 22222:",obj)
+        if (obj.Options.length<2){  //录入有问题，需要单独录入
+          continue
+        }
         this.list.push(obj)
       }
     }

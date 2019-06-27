@@ -1,5 +1,6 @@
 import axios from 'axios';
 import router from "../router";
+import store from "../store";
 import { MessageBox } from 'element-ui'
 import { Message } from 'element-ui'
 
@@ -14,16 +15,16 @@ const service = axios.create({
 // respone拦截器
 service.interceptors.response.use(
   response => {
-    console.log(1)
     return response
   },
   error => {
-    // console.log(2,error)
     const res = error.response
     const req = error.request
     const url = new URL(req.responseURL)
 
     if (res.status == 401){
+      // del username 
+      store.commit("setUsername",'')
       // jump to login page
       MessageBox.confirm('你已被登出，可以取消继续留在该页面，或者重新登录', '确定登出', {
         confirmButtonText: '重新登录',

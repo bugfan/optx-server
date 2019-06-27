@@ -85,11 +85,14 @@ export default {
   created: function() {
     this.fetch()
   },
+  mounted() {
+    this.fetch()
+  },
   methods: {
     fetch(){
       api.all().then(res => {
         this.list=res.data
-        console.log(this.list)
+        // console.log(this.list)
       })
     },
     editDialog(idx, data) {
@@ -148,7 +151,7 @@ export default {
             answer:parseInt(this.form.answer),
             options:this.form.options,
             }).then(res =>{
-              console.log(res.data)
+              // console.log(res.data)
               if (res.sataus >300){
                 this.$message({
                   type: 'info',
@@ -171,7 +174,7 @@ export default {
             answer:parseInt(this.form.answer),
             options:this.form.options,
             }).then(res =>{
-              console.log(res.data)
+              // console.log(res.data)
               if (res.sataus >300){
                 this.$message({
                   type: 'info',

@@ -12,8 +12,15 @@
             <li class="nav-pile">|</li>
             <li @click="showDialog('isShowAbout')">关于</li> -->
             <li>
+            <i>{{username}}</i><br/>
+            </li>
+            <li class="nav-pile">&nbsp;| &nbsp;</li>
+             <li>
             <el-button @click="logout()">退出</el-button>
             </li>
+             <!-- <li>
+            <el-button @click="look()">看状态</el-button>
+            </li> -->
           </ul>
         </div>  
       </div>
@@ -26,12 +33,33 @@ import api from '@/apis/login'
   export default {
     data() {
       return {
-        
+          username:this.getUsername
       };
     },
+    mounted() {
+      console.log("username:",this.$store.state.username)
+      this.username=this.getUName()
+    },
+    computed: {
+      changeUsername() {
+        return this.$store.state.username;
+      }
+    },
+    watch: {
+      changeUsername(val) {
+        this.username=this.getUName(val)
+      }
+    },
     methods: {
+      look(){
+        console.log("look:",this.$store.state.username)
+      },
+      getUName() {
+        return this.$store.state.username=='' ? '未登录' : this.$store.state.username
+      },
       logout() {
         api.logout().then(res => {
+          this.$store.commit("setUsername","")
           this.$router.push(0)
           this.$router.push({path: '/login'});  
         })

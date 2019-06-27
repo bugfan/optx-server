@@ -1,7 +1,7 @@
 <template>
     <div class="login-container">
     <el-form class="login-form" autoComplete="on" :model="loginForm" :rules="loginRules" ref="loginForm" label-position="left">
-        <h3 class="title">李云后台</h3>
+        <h3 class="title">后台入口</h3>
         <el-form-item prop="username">
         <span class="svg-container svg-container_login">
             <svg-icon icon-class="user" />
@@ -82,6 +82,7 @@ export default {
             Password:this.loginForm.password,
         }).then(res => {
             if (res.status == 200){
+                this.$store.commit("setUsername",'rrr')
                 this.$router.push({path: '/options'})
                 this.$router.push(0)
                 this.reset()
