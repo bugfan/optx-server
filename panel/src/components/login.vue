@@ -82,7 +82,7 @@ export default {
             Password:this.loginForm.password,
         }).then(res => {
             if (res.status == 200){
-                this.$store.commit("setUsername",'rrr')
+                this.$store.commit("setUsername",this.loginForm.username)
                 this.$router.push({path: '/options'})
                 this.$router.push(0)
                 this.reset()
