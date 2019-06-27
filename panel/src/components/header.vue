@@ -16,7 +16,7 @@
             </li>
             <li class="nav-pile">&nbsp;| &nbsp;</li>
              <li>
-            <el-button @click="logout()">退出</el-button>
+            <el-button @click="logout()">{{action}}</el-button>
             </li>
              <!-- <li>
             <el-button @click="look()">看状态</el-button>
@@ -33,7 +33,8 @@ import api from '@/apis/login'
   export default {
     data() {
       return {
-          username:this.getUsername
+          username:this.getUsername,
+          action:'登录'
       };
     },
     mounted() {
@@ -48,6 +49,13 @@ import api from '@/apis/login'
     watch: {
       changeUsername(val) {
         this.username=this.getUName(val)
+      },
+      username(val){
+        if (val=="未登录"){
+          this.action="登录"
+        }else{
+          this.action="退出"
+        }
       }
     },
     methods: {
