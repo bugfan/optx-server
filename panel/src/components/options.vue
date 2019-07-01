@@ -3,7 +3,14 @@
       <div v-show="show=='list'">
          <el-button class="filter-item" @click="newDialog()" type="primary" icon="el-icon-edit">添加</el-button>
            <br/>
-           <br/>
+           <el-select v-model="kind" placeholder="请选择题型">
+            <el-option
+              v-for="item in kinds"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
           <el-table :data="list" >
             <el-table-column align="center" label='ID' width="95">
               <template slot-scope="scope">
@@ -41,6 +48,14 @@
       <div v-if="show=='dialog'">
          <el-form ref="form" :model="form" label-width="80px">
           <el-form-item label="问题" required>
+            <el-select v-model="kind" placeholder="请选择题型">
+            <el-option
+              v-for="item in kinds"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
             <el-input v-model="form.question" placeholder="输入问题"></el-input>
           </el-form-item>
           <el-form-item label="答案描述" >
@@ -80,6 +95,14 @@ export default {
           answer: '',
           options:[''],
         },
+      kind:0,
+      kinds: [{
+        value: 1,
+        label: '判断题'
+      }, {
+        value: 0,
+        label: '选择题'
+      }],
     };
   },
   created: function() {
@@ -88,9 +111,14 @@ export default {
   mounted() {
     this.fetch()
   },
+  watch: {
+    kind(){
+      this.fetch()
+    }
+  },
   methods: {
     fetch(){
-      api.all().then(res => {
+      api.all({kind:this.kind}).then(res => {
         this.list=res.data
         // console.log(this.list)
       })
@@ -148,6 +176,7 @@ export default {
           api.create({
             question:this.form.question,
             desc:this.form.desc,
+            kind:this.kind,
             answer:parseInt(this.form.answer),
             options:this.form.options,
             }).then(res =>{
@@ -171,6 +200,7 @@ export default {
         api.update(this.form.id,{
             question:this.form.question,
             desc:this.form.desc,
+            kind:this.kind,
             answer:parseInt(this.form.answer),
             options:this.form.options,
             }).then(res =>{

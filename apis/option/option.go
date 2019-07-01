@@ -12,7 +12,10 @@ import (
 )
 
 func Create(ctx *gin.Context) {
-	opt := models.Options{}
+	kind := ctx.DefaultQuery("kind", "0")
+	opt := models.Options{
+		Kind: to.Int64(kind),
+	}
 	err := ctx.Bind(&opt)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
@@ -35,8 +38,9 @@ func Create(ctx *gin.Context) {
 }
 
 func All(ctx *gin.Context) {
+	kind := ctx.DefaultQuery("kind", "0")
 	all := make([]*models.Options, 0, 0)
-	models.All(&all)
+	models.GetEngine().Where("kind = ?", to.Int64(kind)).Find(&all)
 	ctx.JSON(http.StatusOK, all)
 }
 
@@ -77,11 +81,15 @@ func Update(ctx *gin.Context) {
 
 // 批量导入
 func CreateLot(ctx *gin.Context) {
+	kind := ctx.DefaultQuery("kind", "0")
 	opts := make([]*models.Options, 0, 0)
 	err := ctx.Bind(&opts)
 	if err != nil {
 		ctx.AbortWithError(http.StatusBadRequest, err)
 		return
+	}
+	for _, v := range opts {
+		v.Kind = to.Int64(kind)
 	}
 	_, err = models.GetEngine().Insert(opts)
 	if err != nil {

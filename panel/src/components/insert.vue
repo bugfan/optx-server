@@ -1,5 +1,13 @@
 <template>
     <div>
+      <el-select v-model="kind" placeholder="请选择题型">
+        <el-option
+          v-for="item in kinds"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
       <el-input
         type="textarea"
         :rows="20"
@@ -90,6 +98,14 @@ export default {
           options:[''],
           //  上面的是每个题的属性
         },
+        kind:0,
+        kinds: [{
+          value: 1,
+          label: '判断题'
+        }, {
+          value: 0,
+          label: '选择题'
+        }],
     };
   },
   mounted: function() {
@@ -202,7 +218,12 @@ export default {
     },
     deal() {
       this.list=[]
-    var segs = this.textarea.split(/选择题：/)
+    var segs =[] 
+    if (this.kind==1){
+       segs=this.textarea.split(/判断题：/)   
+    }else{
+       segs=this.textarea.split(/选择题：/)   
+    }
     for (let i =1 ;i<segs.length;i++){
       if (segs[i].length<2){
         continue

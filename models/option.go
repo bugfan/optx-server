@@ -12,6 +12,7 @@ func init() {
 
 type Options struct {
 	ID        int64
+	Kind      int64 `xorm:"default(0)"`
 	Question  string
 	Answer    int64
 	Desc      string
