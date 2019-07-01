@@ -202,18 +202,20 @@ export default {
     },
     deal() {
       this.list=[]
-    var segs = this.textarea.split(/[\d]+.[\s]+/)
+    var segs = this.textarea.split(/选择题：/)
     for (let i =1 ;i<segs.length;i++){
       if (segs[i].length<2){
         continue
       }
-      // console.log("ti:",segs[i])
+      console.log("ti:",segs[i])
       let ti = segs[i].split('。')
+      console.log("segs:",ti)
       if (ti.length > 0){
         // 计算问题
         let ques = ti[0]
         let answer = ques.slice(ques.indexOf('（')+1,ques.indexOf('）')).replace(/\s+/g,"") //replace(/ /g,'')
         ques=ques.replace(new RegExp(answer,'g'),'')
+        console.log("---ques:",ques)
         //计算答案选项
         let answs = ti[1].split('\r')
         let answers = []
