@@ -1,0 +1,27 @@
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+	"regexp"
+)
+
+func main() {
+	r1 := regexp.MustCompile(`([1-9]+)\.\t`)
+	f, _ := ioutil.ReadFile("./source.txt")
+	ff := func(str string) string {
+		fmt.Println("str:", str)
+		return "选择题："
+	}
+	// 	str := `
+	// 	4.	下列关于试井描述错误的是（  D  ）。
+	// （A）	通过开、关井或改变气井工作制度来实现
+	// （B）	测量气井的产量、压力与时间的关系等资料
+	// （C）	用渗流力学理论来研究气井、气藏
+	// （D）	是一种理论研究方法，不是现场试验方法
+	// 5.	通过试井不能达到的目的是（ D   ）。
+	// （A）求取气井的产气方程式     （B）求取绝对无阻流量
+	// （C）确定产层的物性参数       （D）求取产层的厚度    `
+	dst := r1.ReplaceAllStringFunc(string(f), ff)
+	ioutil.WriteFile("./destination.txt", []byte(dst), 0666)
+}

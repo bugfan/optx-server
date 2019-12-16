@@ -7,6 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/core"
 	"github.com/go-xorm/xorm"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 var (
@@ -55,11 +56,19 @@ func newEngine(config *Config) (*xorm.Engine, error) {
 	x.ShowSQL(true)
 	return x, nil
 }
-
-func SetEngine(config *Config) (*xorm.Engine, error) {
+func newSqlite3Engine(config *Config) (*xorm.Engine, error) {
+	return xorm.NewEngine("sqlite3", "./wang.db")
+}
+func SetEngine(config *Config, args ...string) (*xorm.Engine, error) {
 	var err error
-	if x, err = newEngine(config); err != nil {
-		return nil, err
+	if len(args) > 0 && "sqlite3" == args[0] {
+		if x, err = newSqlite3Engine(config); err != nil {
+			return nil, err
+		}
+	} else {
+		if x, err = newEngine(config); err != nil {
+			return nil, err
+		}
 	}
 
 	if err = x.StoreEngine("InnoDB").Sync2(tables...); err != nil {

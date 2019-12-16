@@ -27,7 +27,7 @@ func main() {
 		Host:     settings.Get("db_host"),
 		Name:     settings.Get("db_name"),
 		Log:      settings.Get("db_log"),
-	})
+	}, settings.Get("db_obj"))
 	if err != nil {
 		log.Fatal("链接数据库失败:", err)
 		os.Exit(-1)

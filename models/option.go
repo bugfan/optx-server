@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+	"optx-server/settings"
 	"time"
 
 	"github.com/bugfan/to"
@@ -59,7 +61,12 @@ func getItems(ans []string, answer int64) (items []*Item) {
 }
 func GetCountOptions(count int) (wl []*WordList, err error) {
 	options := make([]*Options, 0, 0)
-	err = GetEngine().OrderBy("RAND()").Limit(count, 0).Find(&options)
+	r := "RANDOM()"
+	fmt.Println("t:")
+	if settings.Get("db_obj") != "sqlite3" {
+		r = "RAND()"
+	}
+	err = GetEngine().OrderBy(r).Limit(count, 0).Find(&options)
 	if err == nil {
 		wl = make([]*WordList, 0, 0)
 		for _, v := range options {
